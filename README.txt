@@ -19,5 +19,5 @@ https://expo.fyi/authorize-android-device
 # Connection Timeout
 Open port 8081 TCP/UDP
 
-# Clean/Reset App
+# Complete Clean/Reset App
 npm run reset-project

@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 
-export default function AlarmsScreen() {
+export default function MapScreen() {
   return (
     <View style={styles.container} >
       <Text>Edit app/index.tsx to edit this screen.</Text>

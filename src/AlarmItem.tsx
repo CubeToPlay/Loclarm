@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 
 import { ThemedText, ThemedTextProps } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -6,7 +6,6 @@ import { ThemedCircle } from "@/components/ThemedCircle";
 import { ThemedPressable } from "@/components/ThemedPressable";
 
 import { Colors } from "@/constants/Colors";
-import { useState } from "react";
 import { StyleSheet, Pressable, GestureResponderEvent} from "react-native";
 
 import { AlarmData } from "@/src/Alarm";
@@ -21,8 +20,12 @@ export type AlarmItemProps = {
 }
 
 export default function AlarmItem( { data } : AlarmItemProps ) {
-  const [opened, setOpened] = useState(false);
   const [enabled, setEnabled] = useState(data.enabled);
+  const [opened, setOpened] = useState(false);
+  const [repeat, setRepeat] = useState(data.repeat);
+  const [custom, setCustom] = useState(data.custom);
+
+  const week = useRef([false, false, false, false, false, false, false]);
 
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
@@ -50,93 +53,118 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
               Mon, Wed
             </ThemedText>
           </ThemedView>
-          <AlarmEnableButton enabled={enabled} setEnabled={setEnabled}/>
+          <AlarmEnableButton/>
       </ThemedPressable>
-      <EditMenu opened={opened} setOpened={setOpened}/>
+      <EditMenu/>
     </ThemedView>
   )
-}
 
-function AlarmEnableButton( { enabled, setEnabled } : { enabled : boolean, setEnabled : React.Dispatch<React.SetStateAction<boolean>>}) {
-  return (
-      <Pressable style={styles.enableButton} onPress={() => setEnabled(!enabled)}>
-        <ThemedView 
-          style={styles.enableButtonBacking} 
-          lightColor={enabled ? Colors.light.alarmEnabled : Colors.light.alarmDisabled}
-          darkColor={enabled ? Colors.dark.alarmEnabled : Colors.dark.alarmDisabled}
-        >
-          <ThemedCircle size={30} lightColor="#ffffff" darkColor="#ffffff" style={{left: enabled ? "50%" : 0}}/>
+  function AlarmEnableButton() {
+    return (
+        <Pressable style={styles.enableButton} onPress={() => setEnabled(!enabled)}>
+          <ThemedView 
+            style={styles.enableButtonBacking} 
+            lightColor={enabled ? Colors.light.alarmEnabled : Colors.light.alarmDisabled}
+            darkColor={enabled ? Colors.dark.alarmEnabled : Colors.dark.alarmDisabled}
+          >
+            <ThemedCircle size={30} lightColor="#ffffff" darkColor="#ffffff" style={{left: enabled ? "50%" : 0}}/>
+          </ThemedView>
+        </Pressable>
+    )
+  }
+
+  function EditMenu() {
+    const menuSize = opened ? 300 : 0;
+    const weekMenuSize = repeat ? menuSize * 0.15 : 0;
+  
+    return (
+      <ThemedView style={[styles.editMenu, {height: menuSize + weekMenuSize}]}>
+        <ThemedView style={styles.editInteractArea}>
+          <EditButton 
+          icon={<MaterialCommunityIcons name={repeat ? "checkbox-outline" : "checkbox-blank-outline"} size={25}/>}
+          text="Repeat"
+          onPress={() => setRepeat(!repeat)}>
+          </EditButton>
+          <Pressable style={[styles.customButton, {display: repeat ? "flex" : "none"}]} onPress={() => {alert("Custom"); setCustom(!custom)}}>
+            <ThemedText style={{fontWeight: "500"}} lightColor={Colors.light.repeatCustomText} darkColor={Colors.dark.repeatCustomText}>
+              Custom
+            </ThemedText>
+          </Pressable>
+          <RepeatMenu repeat={repeat} size={weekMenuSize} opacity={custom ? 0.5 : 1}/>
+          <EditButton 
+          icon={<MaterialCommunityIcons name="calendar-blank-outline" size={25}/>}
+          text="Schedule"
+          onPress={() => alert("Schedule")}/>
+          <EditButton 
+          icon={<Ionicons name="location-outline" size={25}/>}
+          text="Location"
+          onPress={() => alert("Location")}/>
+          <EditButton 
+          icon={<Feather name="pause" size={25}/>}
+          text="Pause alarm"
+          onPress={() => alert("Pause alarm")}/>
+          <EditButton 
+          icon={<MaterialIcons name="multitrack-audio" size={25}/>}
+          text="Alarm sound"
+          onPress={() => alert("Alarm sound")}/>
+          <EditButton 
+          icon={<MaterialCommunityIcons name="trash-can-outline" size={25}/>}
+          text="Delete"
+          onPress={() => alert("Delete")}/>
         </ThemedView>
-      </Pressable>
-  )
-}
-
-function EditMenu( {opened, setOpened } : { opened : boolean,  setOpened : React.Dispatch<React.SetStateAction<boolean>> } ) {
-  const [repeat, setRepeat] = useState(false);
-  const repeatMenuSize = repeat ? 50 : 0;
-
-  return (
-    <ThemedView style={[styles.editMenu, {height: opened ? 250 + repeatMenuSize : 0}]}>
-      <ThemedView style={styles.editInteractArea}>
-        <EditButton 
-        icon={<MaterialCommunityIcons name={repeat ? "checkbox-outline" : "checkbox-blank-outline"} size={25}/>}
-        text="Repeat"
-        onPress={() => setRepeat(!repeat)}/>
-        <RepeatMenu repeat={repeat} size={repeatMenuSize} />
-        <EditButton 
-        icon={<MaterialCommunityIcons name="calendar-blank-outline" size={25}/>}
-        text="Schedule"
-        onPress={() => alert("Schedule")}/>
-        <EditButton 
-        icon={<Ionicons name="location-outline" size={25}/>}
-        text="Location"
-        style={{paddingTop: "2%"}}
-        onPress={() => alert("Location")}/>
-        <EditButton 
-        icon={<Feather name="pause" size={25}/>}
-        text="Pause alarm"
-        onPress={() => alert("Pause alarm")}/>
-        <EditButton 
-        icon={<MaterialIcons name="multitrack-audio" size={25}/>}
-        text="Alarm sound"
-        style={{paddingTop: "2%"}}
-        onPress={() => alert("Alarm sound")}/>
-        <EditButton 
-        icon={<MaterialCommunityIcons name="trash-can-outline" size={25}/>}
-        text="Delete"
-        onPress={() => alert("Delete")}/>
+  
+        <ThemedPressable 
+        style={styles.editClosePressable} 
+        lightColor={Colors.light.alarmCloseEditButtonBackground} 
+        darkColor={Colors.dark.alarmCloseEditButtonBackground} 
+        onPress={() => setOpened(false)}>
+          <ThemedText style={styles.editCloseIcon}>
+            <AntDesign name="caretup" size={15}/>
+          </ThemedText>
+        </ThemedPressable>
       </ThemedView>
+    )
+  }
+  
+  function RepeatMenu({ repeat, size, opacity} : {repeat: boolean, size: number, opacity: number}) {
+    return (
+      <ThemedView style={[styles.repeatMenu, {marginTop: repeat ? "1%" : 0, opacity: opacity}]}>
+        <WeekButton number={0} size={size} text="S"/>
+        <WeekButton number={1} size={size} text="M"/>
+        <WeekButton number={2} size={size} text="T"/>
+        <WeekButton number={3} size={size} text="W"/>
+        <WeekButton number={4} size={size} text="T"/>
+        <WeekButton number={5} size={size} text="F"/>
+        <WeekButton number={6} size={size} text="S"/>
+      </ThemedView>
+    )
+  }
+  
+  function EditButton({ onPress, icon, text, ...props }: ThemedTextProps & {icon : React.JSX.Element, text: string, onPress? : (event: GestureResponderEvent) => void}) {
+    return (
+      <Pressable style={styles.editButton} onPress={onPress}>
+          <ThemedText style={{paddingTop: "0.5%"}} {...props}>{icon}</ThemedText>
+          <ThemedText style={{textAlignVertical: "top", fontWeight: "500"}} >  {text}</ThemedText>
+      </Pressable>
+    )
+  }
+  
+  function WeekButton ({ text, number, size } : {text: string, number: number, size: number }) {
+    const [active, setActive] = useState(week.current[number]);
 
-      <ThemedPressable 
-      style={styles.editClosePressable} 
-      lightColor={Colors.light.alarmCloseEditButtonBackground} 
-      darkColor={Colors.dark.alarmCloseEditButtonBackground} 
-      onPress={() => setOpened(false)}>
-        <ThemedText style={styles.editCloseIcon}>
-          <AntDesign name="caretup" size={15}/>
-        </ThemedText>
-      </ThemedPressable>
-    </ThemedView>
-  )
+    return (
+      <Pressable style={styles.weekButton} onPress={() => {setActive(!active); week.current[number] = !week.current[number]}}>
+        <ThemedCircle
+        style={{alignSelf: "center"}}
+        size={size} 
+        lightColor={week.current[number] ? Colors.light.weekButtonEnabled : Colors.light.weekButtonDisabled}
+        darkColor={week.current[number] ? Colors.dark.weekButtonEnabled : Colors.dark.weekButtonDisabled}>
+          <ThemedText style={styles.weekButtonText}>{text}</ThemedText>
+        </ThemedCircle>
+      </Pressable>
+    )
+  }
 }
-
-function RepeatMenu({ repeat, size } : {repeat: boolean, size: number}) {
-  return (
-    <ThemedView style={[styles.repeatMenu, {height: repeat ? size : 0}]}>
-
-    </ThemedView>
-  )
-}
-
-function EditButton({ onPress, icon, text, ...props }: ThemedTextProps & {icon : React.JSX.Element, text: string, onPress? : (event: GestureResponderEvent) => void}) {
-  return (
-    <Pressable style={styles.editButton} onPress={onPress}>
-        <ThemedText style={{paddingTop: "1%"}} {...props}> {icon} </ThemedText>
-        <ThemedText style={{textAlignVertical: "center"}} > {text} </ThemedText>
-    </Pressable>
-  )
-}
-
 
 const styles = StyleSheet.create({
   item: {
@@ -169,7 +197,7 @@ const styles = StyleSheet.create({
   editClosePressable: {
     position: "absolute",
     width: "100%",
-    height: "15%",
+    height: "12%",
     bottom: 0,
     borderRadius: 5,
   },
@@ -185,7 +213,6 @@ const styles = StyleSheet.create({
     right: "5%",
     left: "5%",
     backgroundColor: "rgb (0, 0, 0, 0)"
-    // backgroundColor: "#ff0000"
   },
   editButton: {
     flex: 1,
@@ -196,6 +223,30 @@ const styles = StyleSheet.create({
 
   repeatMenu: {
     width: "100%",
+    flexDirection: "row",
+    backgroundColor: "rgb(0 0 0 0)"
+  },
+  weekButton: {
+    flex: 1,
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+  weekButtonText: {
+    flex: 1,
+    textAlign: "center",
+    textAlignVertical: "center",
+    fontSize: 20,
+    fontWeight: "500"
+  },
+
+  customButton: {
+    height: "15%",
+    position: "absolute", 
+    right: "-1%",
+    margin: "1%", 
+    paddingRight: "2%",
+    paddingLeft: "5%",
+    // backgroundColor: "#ff0000"
   },
 
   nameText: {

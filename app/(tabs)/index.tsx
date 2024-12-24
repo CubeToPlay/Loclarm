@@ -11,18 +11,24 @@ export default function AlarmsScreen() {
       id: "alarm1",
       name: "Football", 
       enabled: true,
+      custom: false,
+      repeat: false,
       cron: "* * * * 2,3 *",
     },
     {
       id: "alarm2",
       name: "Leave for Bus", 
       enabled: false,
+      custom: true,
+      repeat: false,
       cron: "* * * * 2 *"
     },
     {
       id: "alarm3",
       name: "Taco Time", 
       enabled: true,
+      custom: false,
+      repeat: true,
       cron: "* * * * 0 *"
     }
   ]

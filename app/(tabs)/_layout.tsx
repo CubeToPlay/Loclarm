@@ -76,11 +76,11 @@ function NavBar() {
 
 const styles = StyleSheet.create({
     addButton: {
-        alignItems: 'center', 
-        width: "100%", 
-        paddingTop: "3%"
+        flex: 1,
+        alignSelf: 'center',
+        justifyContent: 'center',
     },
     bottomTab: {
-        height: "8%"
+        height: "7%",
     }
 })

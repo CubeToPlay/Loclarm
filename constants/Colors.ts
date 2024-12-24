@@ -14,11 +14,15 @@ export const Colors = {
     text: '#11181C',
     buttonText: '#11181C',
     buttonDisabledText: '#858585',
+
     background: '#fff',
+    viewBackground: '#DCEEFF',
+
+    alarmCloseEditButtonBackground: '#6C778F',
     alarmButtonBackground: '#DEDEDE',
     alarmEnabled: alarmEnabled,
     alarmDisabled: alarmDisabled,
-    viewBackground: '#DCEEFF',
+
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -28,11 +32,15 @@ export const Colors = {
     text: '#FFFFFF',
     buttonText: '#FFFFFF',
     buttonDisabledText: '#C8C8C8',
+
     background: '#2F3645',
+    viewBackground: '#6F7983',
+
+    alarmCloseEditButtonBackground: '#6C778F',
     alarmButtonBackground: '#50586A',
     alarmEnabled: alarmEnabled,
     alarmDisabled: alarmDisabled,
-    viewBackground: '#6F7983',
+    
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

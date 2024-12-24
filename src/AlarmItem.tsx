@@ -52,7 +52,7 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
           </ThemedView>
           <AlarmEnableButton enabled={enabled} setEnabled={setEnabled}/>
       </ThemedPressable>
-      <CloseEditButton opened={opened} setOpened={setOpened}/>
+      <EditMenu opened={opened} setOpened={setOpened}/>
     </ThemedView>
   )
 }
@@ -71,30 +71,40 @@ function AlarmEnableButton( { enabled, setEnabled } : { enabled : boolean, setEn
   )
 }
 
-function CloseEditButton( {opened, setOpened } : { opened : boolean,  setOpened : React.Dispatch<React.SetStateAction<boolean>> } ) {
+function EditMenu( {opened, setOpened } : { opened : boolean,  setOpened : React.Dispatch<React.SetStateAction<boolean>> } ) {
+  const [repeat, setRepeat] = useState(false);
+  const repeatMenuSize = repeat ? 50 : 0;
+
   return (
-    <ThemedView style={[styles.edit, {height: opened ? 250 : 0}]}>
+    <ThemedView style={[styles.editMenu, {height: opened ? 250 + repeatMenuSize : 0}]}>
       <ThemedView style={styles.editInteractArea}>
         <EditButton 
-        icon={<MaterialCommunityIcons name="checkbox-blank-outline" size={25}/>}
-        text="Repeat"/>
+        icon={<MaterialCommunityIcons name={repeat ? "checkbox-outline" : "checkbox-blank-outline"} size={25}/>}
+        text="Repeat"
+        onPress={() => setRepeat(!repeat)}/>
+        <RepeatMenu repeat={repeat} size={repeatMenuSize} />
         <EditButton 
         icon={<MaterialCommunityIcons name="calendar-blank-outline" size={25}/>}
-        text="Schedule"/>
+        text="Schedule"
+        onPress={() => alert("Schedule")}/>
         <EditButton 
         icon={<Ionicons name="location-outline" size={25}/>}
         text="Location"
-        style={{paddingTop: "8%"}}/>
+        style={{paddingTop: "2%"}}
+        onPress={() => alert("Location")}/>
         <EditButton 
         icon={<Feather name="pause" size={25}/>}
-        text="Pause alarm"/>
+        text="Pause alarm"
+        onPress={() => alert("Pause alarm")}/>
         <EditButton 
         icon={<MaterialIcons name="multitrack-audio" size={25}/>}
         text="Alarm sound"
-        style={{paddingTop: "8%"}}/>
+        style={{paddingTop: "2%"}}
+        onPress={() => alert("Alarm sound")}/>
         <EditButton 
         icon={<MaterialCommunityIcons name="trash-can-outline" size={25}/>}
-        text="Delete"/>
+        text="Delete"
+        onPress={() => alert("Delete")}/>
       </ThemedView>
 
       <ThemedPressable 
@@ -110,10 +120,18 @@ function CloseEditButton( {opened, setOpened } : { opened : boolean,  setOpened 
   )
 }
 
+function RepeatMenu({ repeat, size } : {repeat: boolean, size: number}) {
+  return (
+    <ThemedView style={[styles.repeatMenu, {height: repeat ? size : 0}]}>
+
+    </ThemedView>
+  )
+}
+
 function EditButton({ onPress, icon, text, ...props }: ThemedTextProps & {icon : React.JSX.Element, text: string, onPress? : (event: GestureResponderEvent) => void}) {
   return (
     <Pressable style={styles.editButton} onPress={onPress}>
-        <ThemedText style={{paddingTop: "5%"}} {...props}> {icon} </ThemedText>
+        <ThemedText style={{paddingTop: "1%"}} {...props}> {icon} </ThemedText>
         <ThemedText style={{textAlignVertical: "center"}} > {text} </ThemedText>
     </Pressable>
   )
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb (0, 0, 0, 0)"
   },
 
-  edit: {
+  editMenu: {
     flex: 1,
     backgroundColor: "rgb (0, 0, 0, 0)"
   },
@@ -164,14 +182,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: "18%",
     top: 0,
-    marginHorizontal: "5%",
+    right: "5%",
+    left: "5%",
     backgroundColor: "rgb (0, 0, 0, 0)"
+    // backgroundColor: "#ff0000"
   },
   editButton: {
     flex: 1,
     flexDirection: "row",
     width: "100%",
     marginTop: "1%",
+  },
+
+  repeatMenu: {
+    width: "100%",
   },
 
   nameText: {

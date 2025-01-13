@@ -1,26 +1,32 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GestureResponderEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedPressable } from "@/components/ThemedPressable";
 
-export default function TimeInput() {
-    const [timeInputEnabled, setTimeInputEnabled] = useState(true);
-    const [timeInputValue, setTimeInputValue] = useState([0, 0, 0, 0]);
-    
+export interface TimeInputProps {
+    timeInputEnabledState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+    timeInputValueState: [Array<number>, React.Dispatch<React.SetStateAction<Array<number>>>];
+}
+
+export default function TimeInput({ timeInputEnabledState, timeInputValueState } : TimeInputProps) {
+    const [enabled, setEnabled] = timeInputEnabledState;
+
     function Input() {
         const [amSelected, setAmSelected] = useState(true);
         const [hourSelected, setHourSelected] = useState(true);
-        const [, forcedReload] = useState(0);
-    
+        const [time, setTime] = useState(timeInputValueState[0].length === 0 ? [0, 0, 0, 0] : [...timeInputValueState[0]]);
+
         function Interact() {
             function onCancelPress() {
-                setTimeInputEnabled(false);
+                setEnabled(false);
+                timeInputValueState[1]([]);
             }
     
             function onOkPress() {
-                setTimeInputEnabled(false);
+                setEnabled(false);
+                timeInputValueState[1](time);
             }
     
             return (
@@ -42,15 +48,17 @@ export default function TimeInput() {
         function Keypad() {
             function KeypadButton( { number, children, style } : { number : number, children : string, style?: StyleProp<ViewStyle>} ) {
                 function onPress() {
+                    const updatedTime = [...time];
+
                     function insert(index : number, number: number) {
-                        const temp = timeInputValue[index];
-                        timeInputValue[index] = number;
-                        timeInputValue[index-1] = temp;
+                        const temp = updatedTime[index];
+                        updatedTime[index] = number;
+                        updatedTime[index-1] = temp;
                     }
                 
                     function remove(index : number) {
-                        timeInputValue[index] = timeInputValue[index-1];
-                        timeInputValue[index-1] = 0
+                        updatedTime[index] = updatedTime[index-1];
+                        updatedTime[index-1] = 0
                     }
 
                     const index = hourSelected ? 1 : 3;
@@ -60,22 +68,21 @@ export default function TimeInput() {
                             remove(index);
                             break;
                         default:
-                            let full = timeInputValue[hourSelected ? 0 : 2];
-                            let value = timeInputValue[hourSelected ? 1 : 3] * 10 + number;
+                            let full = updatedTime[hourSelected ? 0 : 2];
+                            let value = updatedTime[hourSelected ? 1 : 3] * 10 + number;
                             if (maximum < value || full) { 
                                 break; 
                             }
                             insert(index, number);
-                            full = timeInputValue[hourSelected ? 0 : 2];
-                            value = timeInputValue[hourSelected ? 1 : 3] * 10 + number;
+                            full = updatedTime[hourSelected ? 0 : 2];
+                            value = updatedTime[hourSelected ? 1 : 3] * 10 + number;
                             if (maximum < value || full) { 
                                 setHourSelected(!hourSelected); 
                             }
                             break;
                     }
-    
-                    setTimeInputValue(timeInputValue);
-                    forcedReload(Math.random());
+                    
+                    setTime(updatedTime);
                 }
     
                 return (
@@ -135,13 +142,13 @@ export default function TimeInput() {
                 <ThemedView style={styles.time} lightColor={Colors.light.timeBackground} darkColor={Colors.dark.timeBackground}>
                     <ThemedView style={styles.timeTextInput}>
                         <TimeBlock selected={hourSelected} onPress={() => setHourSelected(true)}>
-                            {timeInputValue[0].toString()+timeInputValue[1].toString()}
+                            {time[0].toString()+time[1].toString()}
                         </TimeBlock>
                         <ThemedText style={styles.timeTextColon} lightColor={Colors.light.text} darkColor={Colors.dark.text}>
                             :
                         </ThemedText>
                         <TimeBlock selected={!hourSelected} onPress={() => setHourSelected(false)}>
-                            {timeInputValue[2].toString()+timeInputValue[3].toString()}
+                            {time[2].toString()+time[3].toString()}
                         </TimeBlock>
                     </ThemedView>
                     <ThemedView style={styles.timeLatinInput}>
@@ -168,7 +175,7 @@ export default function TimeInput() {
     }
 
     return (
-        <View style={[{display: timeInputEnabled ? "flex" : "none"}, styles.background]}>
+        <View style={[{display: enabled ? "flex" : "none"}, styles.background]}>
             <ThemedView style={styles.blur} lightColor={Colors.light.timeInputBackgroundBlur} darkColor={Colors.dark.timeInputBackgroundBlur}/>
             <Input/>
         </View>

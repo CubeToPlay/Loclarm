@@ -29,7 +29,9 @@ export default function TabLayout() {
     }
     
     function NavBar() {
-        const [timeInputEnabled, setTimeInputEnabled] = useState(true);
+        const timeInputEnabledState = useState(false);
+        const timeInputValueState = useState<Array<number>>([]);
+
         const colorScheme = useColorScheme();
     
         return (
@@ -42,7 +44,7 @@ export default function TabLayout() {
                 }}>
                     <Tab.Screen 
                         name='Alarms' 
-                        component={AlarmsScreen}
+                        children={() => <AlarmsScreen timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>}
                         options={{
                             tabBarIcon: ({ color, focused }) => (
                                 <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />
@@ -59,6 +61,7 @@ export default function TabLayout() {
                         }}
                     />
                 </Tab.Navigator>
+                <TimeInput timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>
             </View>
         )
     }

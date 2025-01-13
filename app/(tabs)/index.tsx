@@ -5,7 +5,9 @@ import { StyleSheet, FlatList} from "react-native";
 import { AlarmData } from "@/src/Alarm";
 import AlarmItem from "@/src/AlarmItem";
 
-export default function AlarmsScreen() {
+import { TimeInputProps } from "@/src/TimeInput";
+
+export default function AlarmsScreen({ timeInputEnabledState, timeInputValueState } : TimeInputProps) {
 
   const testData : Array<AlarmData> = [
     {
@@ -39,7 +41,7 @@ export default function AlarmsScreen() {
       <FlatList
         style={styles.alarmList}
         data={testData}
-        renderItem={({item}) => <AlarmItem data={item}/>}
+        renderItem={({item}) => <AlarmItem data={item} timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>}
         keyExtractor={item => item.id}
       />
     </ThemedView>

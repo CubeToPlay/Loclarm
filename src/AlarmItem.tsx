@@ -15,11 +15,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export type AlarmItemProps = {
+import { TimeInputProps } from "./TimeInput";
+
+export type AlarmItemProps = TimeInputProps & {
   data: AlarmData;
 }
 
-export default function AlarmItem( { data } : AlarmItemProps ) {    
+export default function AlarmItem( { data, timeInputEnabledState, timeInputValueState } : AlarmItemProps ) {  
+  const [, setTimeInputEnabled] = timeInputEnabledState
+  const [timeInputValue, setTimeInputValue] = timeInputValueState
+  
   const [enabled, setEnabled] = useState(data.enabled);
   const [opened, setOpened] = useState(false);
   const [repeat, setRepeat] = useState(data.repeat);
@@ -27,12 +32,25 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
   
   const [time, setTime] = useState([0, 0, 0, 0]);
 
+  const [trigger, setTrigger] = useState(false);
+
   const week = useRef([false, false, false, false, false, false, false]);
 
-  function useTimeInput( timeState: [number[], React.Dispatch<React.SetStateAction<number[]>>]) : void {
-    // const [time, setTime] = timeState;
+  useEffect(() => {
+    if (trigger ) {
+      if (timeInputValue.length === 0) {
+        setTrigger(false);
+      } else if (!isEqual(time, timeInputValue)) {
+        setTrigger(false);
+        setTime(timeInputValue);
+      }  
+    }
+  }, [timeInputValue]);
 
-    // setTimeInputEnabled(true);
+  function useTimeInput() : void {
+    setTimeInputValue([...time]);
+    setTimeInputEnabled(true);
+    setTrigger(true);
   }
 
   return (
@@ -46,7 +64,7 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
               {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
               {data.name}
               </ThemedText>
-            <Pressable style={styles.timePressable} onPress={() => useTimeInput([time, setTime])}>
+            <Pressable style={styles.timePressable} onPress={useTimeInput}>
               <ThemedText 
               style={styles.timeText}
               lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
@@ -172,6 +190,18 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
       </Pressable>
     )
   }
+}
+
+function isEqual(a : Array<number>, b: Array<number>) : boolean {
+  if (a.length != b.length) return false;
+  
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false
+    }
+  }
+
+  return true;
 }
 
 const styles = StyleSheet.create({

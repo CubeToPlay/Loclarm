@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 const Tab = createMaterialTopTabNavigator();
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
@@ -29,34 +29,37 @@ export default function TabLayout() {
     }
     
     function NavBar() {
+        const [timeInputEnabled, setTimeInputEnabled] = useState(true);
         const colorScheme = useColorScheme();
     
         return (
-            <Tab.Navigator
-            screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-                tabBarStyle: { backgroundColor: Colors.dark.viewBackground },
-                tabBarLabelStyle: { textTransform: 'none' }
-            }}>
-                <Tab.Screen 
-                    name='Alarms' 
-                    component={AlarmsScreen}
-                    options={{
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />
-                        )
-                    }}
-                />
-                <Tab.Screen 
-                    name='Map' 
-                    component={MapScreen}
-                    options={{
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
-                        )
-                    }}
-                />
-            </Tab.Navigator>
+            <View style={{height: "100%"}}>
+                <Tab.Navigator
+                screenOptions={{
+                    tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                    tabBarStyle: { backgroundColor: Colors.dark.viewBackground },
+                    tabBarLabelStyle: { textTransform: 'none' }
+                }}>
+                    <Tab.Screen 
+                        name='Alarms' 
+                        component={AlarmsScreen}
+                        options={{
+                            tabBarIcon: ({ color, focused }) => (
+                                <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />
+                            )
+                        }}
+                    />
+                    <Tab.Screen 
+                        name='Map' 
+                        component={MapScreen}
+                        options={{
+                            tabBarIcon: ({ color, focused }) => (
+                                <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
+                            )
+                        }}
+                    />
+                </Tab.Navigator>
+            </View>
         )
     }
 
@@ -67,8 +70,6 @@ export default function TabLayout() {
             <ThemedView style={styles.bottomTab}>
                 <AddButton/>
             </ThemedView>
-            
-            <TimeInput/>
         </View>
     );
 }
@@ -80,6 +81,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     bottomTab: {
+        position: "absolute",
         height: "7%",
+        width: "100%",
+        bottom: 0,
+        zIndex: 0
     }
 })

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { ThemedText, ThemedTextProps } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -19,15 +19,21 @@ export type AlarmItemProps = {
   data: AlarmData;
 }
 
-export default function AlarmItem( { data } : AlarmItemProps ) {
+export default function AlarmItem( { data } : AlarmItemProps ) {    
   const [enabled, setEnabled] = useState(data.enabled);
   const [opened, setOpened] = useState(false);
   const [repeat, setRepeat] = useState(data.repeat);
   const [custom, setCustom] = useState(data.custom);
-    
-  const [time, setTime] = useState([0, 0, 0, 0])
+  
+  const [time, setTime] = useState([0, 0, 0, 0]);
 
   const week = useRef([false, false, false, false, false, false, false]);
+
+  function useTimeInput( timeState: [number[], React.Dispatch<React.SetStateAction<number[]>>]) : void {
+    // const [time, setTime] = timeState;
+
+    // setTimeInputEnabled(true);
+  }
 
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
@@ -40,7 +46,7 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
               {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
               {data.name}
               </ThemedText>
-            <Pressable style={styles.timePressable} onPress={() => alert("modify")}>
+            <Pressable style={styles.timePressable} onPress={() => useTimeInput([time, setTime])}>
               <ThemedText 
               style={styles.timeText}
               lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 

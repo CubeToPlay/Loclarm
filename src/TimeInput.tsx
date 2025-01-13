@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { GestureResponderEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
@@ -6,9 +6,9 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedPressable } from "@/components/ThemedPressable";
 
 export default function TimeInput() {
-    const [enabled, setEnabled] = useState(false);
-    const [time, setTime] = useState([0, 0, 0, 0])
-
+    const [timeInputEnabled, setTimeInputEnabled] = useState(true);
+    const [timeInputValue, setTimeInputValue] = useState([0, 0, 0, 0]);
+    
     function Input() {
         const [amSelected, setAmSelected] = useState(true);
         const [hourSelected, setHourSelected] = useState(true);
@@ -16,11 +16,11 @@ export default function TimeInput() {
     
         function Interact() {
             function onCancelPress() {
-                setEnabled(false);
+                setTimeInputEnabled(false);
             }
     
             function onOkPress() {
-                setEnabled(false);
+                setTimeInputEnabled(false);
             }
     
             return (
@@ -43,14 +43,14 @@ export default function TimeInput() {
             function KeypadButton( { number, children, style } : { number : number, children : string, style?: StyleProp<ViewStyle>} ) {
                 function onPress() {
                     function insert(index : number, number: number) {
-                        const temp = time[index];
-                        time[index] = number;
-                        time[index-1] = temp;
+                        const temp = timeInputValue[index];
+                        timeInputValue[index] = number;
+                        timeInputValue[index-1] = temp;
                     }
                 
                     function remove(index : number) {
-                        time[index] = time[index-1];
-                        time[index-1] = 0
+                        timeInputValue[index] = timeInputValue[index-1];
+                        timeInputValue[index-1] = 0
                     }
 
                     const index = hourSelected ? 1 : 3;
@@ -60,17 +60,21 @@ export default function TimeInput() {
                             remove(index);
                             break;
                         default:
-                            let full = time[hourSelected ? 0 : 2];
-                            let value = time[hourSelected ? 1 : 3] * 10 + number;
-                            if (maximum < value || full) { break; }
+                            let full = timeInputValue[hourSelected ? 0 : 2];
+                            let value = timeInputValue[hourSelected ? 1 : 3] * 10 + number;
+                            if (maximum < value || full) { 
+                                break; 
+                            }
                             insert(index, number);
-                            full = time[hourSelected ? 0 : 2];
-                            value = time[hourSelected ? 1 : 3] * 10 + number;
-                            if (maximum < value || full) { setHourSelected(!hourSelected); }
+                            full = timeInputValue[hourSelected ? 0 : 2];
+                            value = timeInputValue[hourSelected ? 1 : 3] * 10 + number;
+                            if (maximum < value || full) { 
+                                setHourSelected(!hourSelected); 
+                            }
                             break;
                     }
     
-                    setTime(time);
+                    setTimeInputValue(timeInputValue);
                     forcedReload(Math.random());
                 }
     
@@ -131,13 +135,13 @@ export default function TimeInput() {
                 <ThemedView style={styles.time} lightColor={Colors.light.timeBackground} darkColor={Colors.dark.timeBackground}>
                     <ThemedView style={styles.timeTextInput}>
                         <TimeBlock selected={hourSelected} onPress={() => setHourSelected(true)}>
-                            {time[0].toString()+time[1].toString()}
+                            {timeInputValue[0].toString()+timeInputValue[1].toString()}
                         </TimeBlock>
                         <ThemedText style={styles.timeTextColon} lightColor={Colors.light.text} darkColor={Colors.dark.text}>
                             :
                         </ThemedText>
                         <TimeBlock selected={!hourSelected} onPress={() => setHourSelected(false)}>
-                            {time[2].toString()+time[3].toString()}
+                            {timeInputValue[2].toString()+timeInputValue[3].toString()}
                         </TimeBlock>
                     </ThemedView>
                     <ThemedView style={styles.timeLatinInput}>
@@ -156,15 +160,15 @@ export default function TimeInput() {
     
         return (
             <ThemedView style={styles.input} lightColor={Colors.light.timeInputBackground} darkColor={Colors.dark.timeInputBackground}>
-                <Time/>
-                <Keypad/>
-                <Interact/>
+                    <Time/>
+                    <Keypad/>
+                    <Interact/>
             </ThemedView>
         )
     }
 
     return (
-        <View style={[{display: enabled ? "flex" : "none"}, styles.background]}>
+        <View style={[{display: timeInputEnabled ? "flex" : "none"}, styles.background]}>
             <ThemedView style={styles.blur} lightColor={Colors.light.timeInputBackgroundBlur} darkColor={Colors.dark.timeInputBackgroundBlur}/>
             <Input/>
         </View>
@@ -176,6 +180,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         height: "100%",
         width: "100%",
+        zIndex: 10
         // backgroundColor: "#00ff00"
     },
     blur: {

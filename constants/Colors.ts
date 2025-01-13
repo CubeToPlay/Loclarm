@@ -28,6 +28,16 @@ export const Colors = {
 
     repeatCustomText: '#525252',
 
+    timeInputBackgroundBlur: '#B6B6B6',
+
+    timeInputBackground: '#DCEEFF',
+    keypadButtonBackground: '#BAD9F7',
+
+    timeBackground: '#B6D4F0',
+    timeBlock: '#E2E9F0',
+
+    timeBlockSelected: '#89BEF0',
+
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -50,6 +60,16 @@ export const Colors = {
     weekButtonDisabled: '#6C778F',
     
     repeatCustomText: '#ADBFE5',
+
+    timeInputBackgroundBlur: '#686868',
+
+    timeInputBackground: '#2F3645',
+    keypadButtonBackground: '#616A73',
+
+    timeBackground: '#616A73',
+    timeBlock: '#565E66',
+
+    timeBlockSelected: '#6775DB',
 
     tint: tintColorDark,
     icon: '#9BA1A6',

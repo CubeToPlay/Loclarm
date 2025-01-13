@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ThemedText, ThemedTextProps } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -24,6 +24,8 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
   const [opened, setOpened] = useState(false);
   const [repeat, setRepeat] = useState(data.repeat);
   const [custom, setCustom] = useState(data.custom);
+    
+  const [time, setTime] = useState([0, 0, 0, 0])
 
   const week = useRef([false, false, false, false, false, false, false]);
 
@@ -38,12 +40,12 @@ export default function AlarmItem( { data } : AlarmItemProps ) {
               {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
               {data.name}
               </ThemedText>
-            <Pressable style={styles.timePressable} onPress={() => alert(`Change Alarm '${data.name}' Time`)}>
+            <Pressable style={styles.timePressable} onPress={() => alert("modify")}>
               <ThemedText 
               style={styles.timeText}
               lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
               darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
-                7:30 AM
+                {(time[0] * 10 + time[1]).toString()}:{time[2].toString()+time[3].toString()} AM
               </ThemedText>
             </Pressable>
             <ThemedText 

@@ -1,11 +1,12 @@
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
-import { StyleSheet, FlatList, Pressable, View } from "react-native";
+import { StyleSheet, FlatList} from "react-native";
 
 import { AlarmData } from "@/src/Alarm";
 import AlarmItem from "@/src/AlarmItem";
 
 export default function AlarmsScreen() {
+
   const testData : Array<AlarmData> = [
     {
       id: "alarm1",

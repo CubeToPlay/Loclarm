@@ -15,42 +15,28 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AlarmsScreen from './index';
 import MapScreen from './map';
 import { ThemedView } from '@/components/ThemedView';
+import TimeInput from '@/src/TimeInput';
 
 export default function TabLayout() {
-    return (
-        <>
-            <NavBar/>
-
-            <ThemedView style={styles.bottomTab}>
-                <AddButton/>
-            </ThemedView>
-        </>
-    );
-}
-
-function AddButton() {
-    return (
-        <View style={styles.addButton}>
-            <Pressable onPress={() => alert("New Alarm")}>
-                <Ionicons name='add-circle-outline' size={50} color={Colors.dark.tabIconSelected}/>
-            </Pressable>
-        </View>
-    )
-}
-
-function NavBar() {
-    const colorScheme = useColorScheme();
-
-    return (
-        <Tab.Navigator
+    function AddButton() {
+        return (
+            <View style={styles.addButton}>
+                <Pressable onPress={() => alert("New Alarm")}>
+                    <Ionicons name='add-circle-outline' size={50} color={Colors.dark.tabIconSelected}/>
+                </Pressable>
+            </View>
+        )
+    }
+    
+    function NavBar() {
+        const colorScheme = useColorScheme();
+    
+        return (
+            <Tab.Navigator
             screenOptions={{
                 tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-                tabBarStyle: {
-                    backgroundColor: Colors.dark.viewBackground,
-                },
-                tabBarLabelStyle: {
-                    textTransform: 'none'
-                }
+                tabBarStyle: { backgroundColor: Colors.dark.viewBackground },
+                tabBarLabelStyle: { textTransform: 'none' }
             }}>
                 <Tab.Screen 
                     name='Alarms' 
@@ -70,8 +56,21 @@ function NavBar() {
                         )
                     }}
                 />
-        </Tab.Navigator>
-    )
+            </Tab.Navigator>
+        )
+    }
+
+    return (
+        <View style={{flex: 1}}>
+            <NavBar/>
+
+            <ThemedView style={styles.bottomTab}>
+                <AddButton/>
+            </ThemedView>
+            
+            <TimeInput/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

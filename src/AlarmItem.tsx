@@ -8,7 +8,7 @@ import { ThemedPressable } from "@/components/ThemedPressable";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet, Pressable, GestureResponderEvent} from "react-native";
 
-import { AlarmData } from "@/src/Alarm";
+import Alarm, { AlarmData } from "@/src/Alarm";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -18,26 +18,33 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { TimeInputProps } from "./TimeInput";
 
 export type AlarmItemProps = TimeInputProps & {
-  data: AlarmData;
+  alarm: AlarmData;
 }
 
-export default function AlarmItem( { data, timeInputEnabledState, timeInputValueState } : AlarmItemProps ) {  
-  const [, setTimeInputEnabled] = timeInputEnabledState
-  const [timeInputValue, setTimeInputValue] = timeInputValueState
-  
-  const [enabled, setEnabled] = useState(data.enabled);
-  const [opened, setOpened] = useState(false);
-  const [repeat, setRepeat] = useState(data.repeat);
-  const [custom, setCustom] = useState(data.custom);
-  
+export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValueState } : AlarmItemProps ) {  
+  const [enabled, setEnabled] = useState(alarm.enabled);
+  const [repeat, setRepeat] = useState(alarm.repeat);
+  const [custom, setCustom] = useState(alarm.custom);
   const [time, setTime] = useState([0, 0, 0, 0]);
 
+  const [, setTimeInputEnabled] = timeInputEnabledState
+  const [timeInputValue, setTimeInputValue] = timeInputValueState
+
+  const [opened, setOpened] = useState(false);
   const [trigger, setTrigger] = useState(false);
 
   const week = useRef([false, false, false, false, false, false, false]);
 
   useEffect(() => {
-    if (trigger ) {
+    alarm.custom = custom;
+    alarm.enabled = enabled;
+    alarm.repeat = repeat;
+    Alarm.updateAlarm(alarm);
+    Alarm.store();
+  }, [enabled, repeat, custom, time])
+
+  useEffect(() => {
+    if (trigger) {
       if (timeInputValue.length === 0) {
         setTrigger(false);
       } else if (!isEqual(time, timeInputValue)) {
@@ -46,12 +53,6 @@ export default function AlarmItem( { data, timeInputEnabledState, timeInputValue
       }  
     }
   }, [timeInputValue]);
-
-  function useTimeInput() : void {
-    setTimeInputValue([...time]);
-    setTimeInputEnabled(true);
-    setTrigger(true);
-  }
 
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
@@ -62,9 +63,9 @@ export default function AlarmItem( { data, timeInputEnabledState, timeInputValue
             lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
             darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
               {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
-              {data.name}
+              {alarm.name}
               </ThemedText>
-            <Pressable style={styles.timePressable} onPress={useTimeInput}>
+            <Pressable style={styles.timePressable} onPress={onTimeEditPress}>
               <ThemedText 
               style={styles.timeText}
               lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
@@ -189,6 +190,12 @@ export default function AlarmItem( { data, timeInputEnabledState, timeInputValue
         </ThemedCircle>
       </Pressable>
     )
+  }
+
+  function onTimeEditPress() {
+    setTimeInputValue([...time]);
+    setTimeInputEnabled(true);
+    setTrigger(true);
   }
 }
 

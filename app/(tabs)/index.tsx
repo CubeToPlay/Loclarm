@@ -2,18 +2,24 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet, FlatList} from "react-native";
 
-import Alarm, { AlarmData } from "@/src/Alarm";
+import Alarm from "@/src/Alarm";
 import AlarmItem from "@/src/AlarmItem";
 
-import { TimeInputProps } from "@/src/TimeInput";
+import { useState } from "react";
 
-export default function AlarmsScreen({ timeInputEnabledState, timeInputValueState } : TimeInputProps) {
+export default function AlarmsScreen() {
+  const [, forceReload] = useState(0);
+
+  Alarm.useCallback(() => {
+    forceReload(Math.random);
+  })
+
   return (
     <ThemedView style={styles.container} lightColor={Colors.light.background} darkColor={Colors.dark.background}>
       <FlatList
         style={styles.alarmList}
         data={Alarm.getAllAlarms()}
-        renderItem={({item}) => <AlarmItem alarm={item} timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>}
+        renderItem={({item}) => <AlarmItem alarm={item}/>}
         keyExtractor={item => item.id}
       />
     </ThemedView>

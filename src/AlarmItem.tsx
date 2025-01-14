@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ThemedText, ThemedTextProps } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -6,7 +6,7 @@ import { ThemedCircle } from "@/components/ThemedCircle";
 import { ThemedPressable } from "@/components/ThemedPressable";
 
 import { Colors } from "@/constants/Colors";
-import { StyleSheet, Pressable, GestureResponderEvent, View} from "react-native";
+import { StyleSheet, Pressable, GestureResponderEvent, Alert} from "react-native";
 
 import Alarm, { AlarmData } from "@/src/Alarm";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -15,23 +15,19 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import { TimeInputProps } from "./TimeInput";
+import Input from "./Input";
 
-export type AlarmItemProps = TimeInputProps & {
+export type AlarmItemProps = {
   alarm: AlarmData;
 }
 
-export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValueState } : AlarmItemProps ) {  
+export default function AlarmItem( { alarm } : AlarmItemProps ) {  
   const [enabled, setEnabled] = useState(alarm.enabled);
   const [repeat, setRepeat] = useState(alarm.repeat);
   const [custom, setCustom] = useState(alarm.custom);
   const [time, setTime] = useState([0, 0, 0, 0]);
 
-  const [, setTimeInputEnabled] = timeInputEnabledState
-  const [timeInputValue, setTimeInputValue] = timeInputValueState
-
   const [opened, setOpened] = useState(false);
-  const [trigger, setTrigger] = useState(false);
 
   const week = useRef([false, false, false, false, false, false, false]);
 
@@ -43,28 +39,19 @@ export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValu
     Alarm.store();
   }, [enabled, repeat, custom, time])
 
-  useEffect(() => {
-    if (trigger) {
-      if (timeInputValue.length === 0) {
-        setTrigger(false);
-      } else if (!isEqual(time, timeInputValue)) {
-        setTrigger(false);
-        setTime(timeInputValue);
-      }  
-    }
-  }, [timeInputValue]);
-
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
         <ThemedPressable style={styles.displayArea} onPress={() => {setOpened(!opened)}}>
           <ThemedView style={styles.info}>
-            <ThemedText 
-            style={styles.nameText} 
-            lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
-            darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
-              {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
-              {alarm.name}
+            <Pressable style={styles.namePressable} onPress={onNameEditPress}>
+              <ThemedText 
+                style={styles.nameText} 
+                lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
+                darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
+                {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
+                {alarm.name}
               </ThemedText>
+            </Pressable>
             <Pressable style={styles.timePressable} onPress={onTimeEditPress}>
               <ThemedText 
               style={styles.timeText}
@@ -141,7 +128,7 @@ export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValu
           <EditButton 
           icon={<MaterialCommunityIcons name="trash-can-outline" size={25}/>}
           text="Delete"
-          onPress={() => alert("Delete")}/>
+          onPress={onDeletePress}/>
         </ThemedView>
   
         <ThemedPressable 
@@ -196,10 +183,40 @@ export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValu
     )
   }
 
+  function onNameEditPress() {
+    if (opened) {
+      alert("hello")
+    } else {
+      setOpened(true);
+    }
+  }
+
   function onTimeEditPress() {
-    setTimeInputValue([...time]);
-    setTimeInputEnabled(true);
-    setTrigger(true);
+    Input.time(time, (updatedTime) => {
+      if (updatedTime.length !== 0) {
+        setTime(updatedTime);
+      }
+    });
+  }
+
+  function onDeletePress() {
+    Alert.alert(
+      `Delete '${alarm.name}'`,
+      `Are you sure?`,
+      [
+        {
+          text: 'No',
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            Alarm.deleteAlarm(alarm);
+            Alarm.store();
+          }
+        }
+      ]
+    );
   }
 }
 
@@ -295,12 +312,15 @@ const styles = StyleSheet.create({
     margin: "1%", 
     paddingRight: "2%",
     paddingLeft: "5%",
-    // backgroundColor: "#ff0000"
   },
 
   nameText: {
     flex: 1,
     fontSize: 22.5,
+  },
+  namePressable: {
+    flex: 1,
+    width: "50%",
   },
   timePressable: {
     flex: 1,

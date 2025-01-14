@@ -15,7 +15,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AlarmsScreen from './index';
 import MapScreen from './map';
 import { ThemedView } from '@/components/ThemedView';
-import TimeInput from '@/src/TimeInput';
+import Alarm from '@/src/Alarm';
+import Input from '@/src/Input';
 
 export default function TabLayout() {    
     return (
@@ -27,6 +28,7 @@ export default function TabLayout() {
 }
 
 function NavBar() {
+    const [, forceUpdate] = useState(0);
     const timeInputEnabledState = useState(false);
     const timeInputValueState = useState<Array<number>>([]);
 
@@ -42,7 +44,7 @@ function NavBar() {
             }}>
                 <Tab.Screen 
                     name='Alarms' 
-                    children={() => <AlarmsScreen timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>}
+                    children={() => <AlarmsScreen/>}
                     options={{
                         tabBarIcon: ({ color, focused }) => (
                             <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />
@@ -59,14 +61,14 @@ function NavBar() {
                     }}
                 />
             </Tab.Navigator>
-            <TimeInput timeInputEnabledState={timeInputEnabledState} timeInputValueState={timeInputValueState}/>
+            <Input.Component/>
         </View>
     )
 }
 
 function BottomBar() {
     function onNewAlarmPress() {
-        console.log("New Alarm");
+        Alarm.createAlarm(Alarm.newAlarm("test"));
     }
 
     function AddButton() {

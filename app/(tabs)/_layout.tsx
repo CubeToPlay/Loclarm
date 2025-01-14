@@ -66,7 +66,7 @@ function NavBar() {
 
 function BottomBar() {
     function onNewAlarmPress() {
-        console.log("New Alarm")
+        console.log("New Alarm");
     }
 
     function AddButton() {

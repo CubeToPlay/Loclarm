@@ -6,7 +6,7 @@ import { ThemedCircle } from "@/components/ThemedCircle";
 import { ThemedPressable } from "@/components/ThemedPressable";
 
 import { Colors } from "@/constants/Colors";
-import { StyleSheet, Pressable, GestureResponderEvent} from "react-native";
+import { StyleSheet, Pressable, GestureResponderEvent, View} from "react-native";
 
 import Alarm, { AlarmData } from "@/src/Alarm";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -101,9 +101,13 @@ export default function AlarmItem( { alarm, timeInputEnabledState, timeInputValu
   }
 
   function EditMenu() {
-    const menuSize = opened ? 300 : 0;
+    if (!opened) {
+      return null;
+    }
+
+    const menuSize = 300;
     const weekMenuSize = repeat ? menuSize * 0.15 : 0;
-  
+
     return (
       <ThemedView style={[styles.editMenu, {height: menuSize + weekMenuSize}]}>
         <ThemedView style={styles.editInteractArea}>

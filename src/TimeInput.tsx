@@ -11,8 +11,12 @@ export interface TimeInputProps {
 }
 
 export default function TimeInput({ timeInputEnabledState, timeInputValueState } : TimeInputProps) {
-    const [enabled, setEnabled] = timeInputEnabledState;
+    if (!timeInputEnabledState[0]) {
+        return null;
+    }
 
+    const [enabled, setEnabled] = timeInputEnabledState;
+    
     function Input() {
         const [amSelected, setAmSelected] = useState(true);
         const [hourSelected, setHourSelected] = useState(true);
@@ -167,15 +171,15 @@ export default function TimeInput({ timeInputEnabledState, timeInputValueState }
     
         return (
             <ThemedView style={styles.input} lightColor={Colors.light.timeInputBackground} darkColor={Colors.dark.timeInputBackground}>
-                    <Time/>
-                    <Keypad/>
-                    <Interact/>
+                <Time/>
+                <Keypad/>
+                <Interact/>
             </ThemedView>
         )
     }
 
     return (
-        <View style={[{display: enabled ? "flex" : "none"}, styles.background]}>
+        <View style={styles.background}>
             <ThemedView style={styles.blur} lightColor={Colors.light.timeInputBackgroundBlur} darkColor={Colors.dark.timeInputBackgroundBlur}/>
             <Input/>
         </View>

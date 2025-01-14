@@ -1,4 +1,5 @@
 import Storage from "./Storage";
+import uuid from 'react-native-uuid';
 
 export interface AlarmData {
     id: string,

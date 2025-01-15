@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
-import { View, StyleSheet, Pressable } from "react-native"
+import { View, StyleSheet, Pressable, ViewStyle } from "react-native"
 
 interface ThemedInputOptions {
     title : string,
@@ -13,23 +13,27 @@ interface ThemedInputOptions {
 
 interface ThemedInputProps {
     children : React.JSX.Element;
-    options : ThemedInputOptions
+    options : ThemedInputOptions;
+    viewStyle? : ViewStyle;
+    interactStyle? : ViewStyle;
+    leftButtonStyle? : ViewStyle;
+    rightButtonStyle? : ViewStyle;
 }
 
-export default function ThemedInput( { children, options } : ThemedInputProps) {
+export default function ThemedInput( { children, options, viewStyle, interactStyle, leftButtonStyle, rightButtonStyle } : ThemedInputProps) {
     return (
-        <ThemedView style={styles.background} lightColor={Colors.light.timeInputBackground} darkColor={Colors.dark.timeInputBackground}>
+        <ThemedView style={[styles.background, viewStyle]} lightColor={Colors.light.timeInputBackground} darkColor={Colors.dark.timeInputBackground}>
             <ThemedText style={styles.titleText}>
                 {options.title}
             </ThemedText>
             {children}
-            <View style={styles.interactBackground}>
-                <Pressable style={styles.interactPressable} onPress={options.leftButtonCallback}>
+            <View style={[styles.interactBackground, interactStyle]}>
+                <Pressable style={[styles.interactPressable, leftButtonStyle]} onPress={options.leftButtonCallback}>
                     <ThemedText style={styles.interactText}>
                         {options.leftButtonText}
                     </ThemedText>    
                 </Pressable>
-                <Pressable style={styles.interactPressable} onPress={options.rightButtonCallback}>
+                <Pressable style={[styles.interactPressable, rightButtonStyle]} onPress={options.rightButtonCallback}>
                     <ThemedText style={styles.interactText}>
                         {options.rightButtonText}
                     </ThemedText>

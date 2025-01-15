@@ -23,11 +23,6 @@ export default function NameInput( { action, update } : { action: NameInputActio
         update();
     }
 
-    function onCancel() {
-        action.callback('');
-        close();
-    }
-
     function onOk() {
         action.callback(text);
         close();
@@ -37,7 +32,7 @@ export default function NameInput( { action, update } : { action: NameInputActio
         <ThemedInput options={{
             title: "Alarm Name",
             leftButtonText: "Cancel",
-            leftButtonCallback: onCancel,
+            leftButtonCallback: close,
             rightButtonText: "Ok",
             rightButtonCallback: onOk,
         }}>

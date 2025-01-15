@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Feather from '@expo/vector-icons/Feather';
 import { GestureResponderEvent, StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
@@ -22,21 +23,21 @@ export default function TimeInput( { action, update } : { action: TimeInputActio
     const [time, setTime] = useState([...action.time]);
 
     function Interact() {
-        function onCancelPress() {
-            action.callback([]);
+        function close() {
             action.active = false
             update();
         }
 
         function onOkPress() {
-            action.callback(time);
-            action.active = false
-            update();
+            const add = amSelected || false;
+
+            action.callback([time[0]+(add?0:1), time[1]+(add?0:2), time[2], time[3]]);
+            close();
         }
 
         return (
             <ThemedView style={styles.interact}>
-                <ThemedPressable style={styles.interactButton} lightColor={Colors.light.keypadButtonBackground} darkColor={Colors.dark.keypadButtonBackground} onPress={onCancelPress}>
+                <ThemedPressable style={styles.interactButton} lightColor={Colors.light.keypadButtonBackground} darkColor={Colors.dark.keypadButtonBackground} onPress={close}>
                     <ThemedText style={styles.interactButtonText}>
                         Cancel
                     </ThemedText>
@@ -51,7 +52,7 @@ export default function TimeInput( { action, update } : { action: TimeInputActio
     }
 
     function Keypad() {
-        function KeypadButton( { number, children, style } : { number : number, children : string, style?: StyleProp<ViewStyle>} ) {
+        function KeypadButton( { number, children, style } : { number : number, children : string | React.JSX.Element, style?: StyleProp<ViewStyle>} ) {
             function onPress() {
                 const updatedTime = [...time];
 
@@ -110,7 +111,7 @@ export default function TimeInput( { action, update } : { action: TimeInputActio
                 <KeypadButton number={3} children="3"/>
                 <KeypadButton number={2} children="2"/>
                 <KeypadButton number={1} children="1"/>
-                <KeypadButton number={10} children="<"/>
+                <KeypadButton number={10} style={{paddingBottom: "3%"}} children={<Feather name="delete" size={25}/>}/>
                 <KeypadButton number={0} style={{width: 132}} children="0"/>
             </ThemedView>
         )

@@ -23,6 +23,7 @@ export type AlarmItemProps = {
 
 export default function AlarmItem( { alarm } : AlarmItemProps ) {  
   const [name, setName] = useState(alarm.name);
+  const [date, setDate] = useState("")
   const [enabled, setEnabled] = useState(alarm.enabled);
   const [repeat, setRepeat] = useState(alarm.repeat);
   const [custom, setCustom] = useState(alarm.custom);
@@ -66,7 +67,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
             style={styles.datesText}
             lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
             darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
-              Mon, Wed
+              {getWeeks()}
             </ThemedText>
           </ThemedView>
           <AlarmEnableButton/>
@@ -114,7 +115,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
           <EditButton 
           icon={<MaterialCommunityIcons name="calendar-blank-outline" size={25}/>}
           text="Schedule"
-          onPress={() => alert("Schedule")}/>
+          onPress={onSchedulePress}/>
           <EditButton 
           icon={<Ionicons name="location-outline" size={25}/>}
           text="Location"
@@ -122,7 +123,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
           <EditButton 
           icon={<Feather name="pause" size={25}/>}
           text="Pause alarm"
-          onPress={() => alert("Pause alarm")}/>
+          onPress={onPauseAlarmPress}/>
           <EditButton 
           icon={<MaterialIcons name="multitrack-audio" size={25}/>}
           text="Alarm sound"
@@ -186,22 +187,14 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
   }
 
   function onNameEditPress() {
-    if (opened) {
-      Input.name(name, (updatedName) => {
-        if (updatedName !== '') {
-          setName(updatedName);
-        }
-      })
-    } else {
-      setOpened(true);
-    }
+    Input.name(name, (updatedName) => {
+      setName(updatedName);
+    })
   }
 
   function onTimeEditPress() {
     Input.time(time, (updatedTime) => {
-      if (updatedTime.length !== 0) {
-        setTime(updatedTime);
-      }
+      setTime(updatedTime);
     });
   }
 
@@ -211,7 +204,38 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
       Alarm.store();
     })
   }
+
+  function onSchedulePress() {
+    Input.calendar("Schedule", date, (updatedDate) => {
+      setDate(updatedDate);
+    })
+  }
+
+  function onPauseAlarmPress() {
+    Input.calendar("Pause Until", "", (updatedDate) => {
+      console.log(updatedDate);
+    })
+  }
+
+  function getWeeks() {
+    const active = weekNames.filter((_, index) => week.current[index]);
+    if (active.length == 1) {
+      return active[0];
+    } else {
+      return active.map((name) => name.slice(0, 3)).join(", ");
+    }
+  }
 }
+
+const weekNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+]
 
 const styles = StyleSheet.create({
   item: {

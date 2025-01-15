@@ -5,6 +5,7 @@ import { ThemedView } from "@/components/ThemedView";
 import TimeInput, { TimeInputAction } from "./TimeInput";
 import NameInput, { NameInputAction } from "./NameInput";
 import DeleteInput, { DeleteInputAction } from "./DeleteInput";
+import CalendarInput, { CalendarInputAction } from "./CalendarInput";
 
 export interface Action {
     active: boolean,
@@ -17,12 +18,13 @@ namespace Input {
     const TimeInputAction : TimeInputAction = {active: false, time: [], callback: () => {}}
     const NameInputAction : NameInputAction = {active: false, name: "", callback: () => {}}
     const DeleteInputAction : DeleteInputAction = {active: false, name: "", callback: () => {}}
+    const CalendarInputAction : CalendarInputAction = {active: false, purpose: "", date: "", callback: () => {}}
 
     export function Component() {
         const [, forceUpdate] = useState(0);
         update = () => forceUpdate(Math.random());
 
-        if (!TimeInputAction.active && !NameInputAction.active && !DeleteInputAction.active) {
+        if (!TimeInputAction.active && !NameInputAction.active && !DeleteInputAction.active && !CalendarInputAction.active) {
             return null;
         }
 
@@ -32,6 +34,7 @@ namespace Input {
                 <TimeInput action={TimeInputAction} update={update}/>
                 <NameInput action={NameInputAction} update={update}/>
                 <DeleteInput action={DeleteInputAction} update={update}/>
+                <CalendarInput action={CalendarInputAction} update={update}/>
             </View>
         )
     }
@@ -54,6 +57,14 @@ namespace Input {
         DeleteInputAction.active = true;
         DeleteInputAction.name = name;
         DeleteInputAction.callback = callback;
+        update();
+    }
+    
+    export function calendar(purpose: string, date: string, callback: (date : string) => void) : void {
+        CalendarInputAction.active = true;
+        CalendarInputAction.purpose = purpose;
+        CalendarInputAction.date = date;
+        CalendarInputAction.callback = callback;
         update();
     }
 

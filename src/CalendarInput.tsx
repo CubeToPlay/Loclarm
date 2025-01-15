@@ -1,22 +1,15 @@
 import ThemedInput from "@/components/ThemedInput";
 import { StyleSheet, View } from "react-native"
 import { Action } from "./Input";
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar, DateData } from 'react-native-calendars';
 import { useState } from "react";
+import { ThemedCalendar } from "@/components/ThemedCalendar";
 
 export interface CalendarInputAction extends Action {
     active: boolean,
     purpose: string,
     date: string,
     callback: (date : string) => void
-}
-
-export interface CalendarObject {
-    day: number,      // day of month (1-31)
-    month: number,    // month of year (1-12)
-    year: number,  // year
-    timestamp: number,   // UTC timestamp representing 00:00 AM of this date
-    dateString: string // date formatted as 'YYYY-MM-DD' string
 }
 
 export default function CalendarInput( { action, update } : { action: CalendarInputAction, update : () => void}) {
@@ -36,7 +29,6 @@ export default function CalendarInput( { action, update } : { action: CalendarIn
         close();
     }
 
-
     return (
         <ThemedInput 
         options={{
@@ -49,9 +41,9 @@ export default function CalendarInput( { action, update } : { action: CalendarIn
         viewStyle={{height: "43%", top: "30%"}}
         interactStyle={{marginBottom: "-2%"}}>
             <View style={styles.inputBackground}>
-                <Calendar
-                    onDayPress={(day : CalendarObject) => setSelected(day.dateString)}
-                    markedDates={{ [selected]: {selected: true, disableTouchEvent: true, selectedDotColor: 'orange'} }}
+                <ThemedCalendar
+                    onDayPress={(day : DateData) => setSelected(day.dateString)}
+                    markedDates={{ [selected]: {selected: true, disableTouchEvent: true} }}
                 />
             </View>
         </ThemedInput>

@@ -6,8 +6,9 @@ import Alarm from "@/src/Alarm";
 import AlarmItem from "@/src/AlarmItem";
 
 import { useState } from "react";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 
-export default function AlarmsScreen() {
+export default function AlarmsScreen({ navigation } : { navigation : MaterialTopTabNavigationProp<any> }) {
   const [, forceReload] = useState(0);
 
   Alarm.useCallback(() => {
@@ -19,7 +20,7 @@ export default function AlarmsScreen() {
       <FlatList
         style={styles.alarmList}
         data={Alarm.getAllAlarms()}
-        renderItem={({item}) => <AlarmItem alarm={item}/>}
+        renderItem={({item}) => <AlarmItem alarm={item} navigation={navigation}/>}
         keyExtractor={item => item.id}
       />
     </ThemedView>

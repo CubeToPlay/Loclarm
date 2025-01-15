@@ -17,6 +17,7 @@ import MapScreen from './map';
 import { ThemedView } from '@/components/ThemedView';
 import Alarm from '@/src/Alarm';
 import Input from '@/src/Input';
+import { useNavigation } from '@react-navigation/native';
 
 export default function TabLayout() {    
     return (
@@ -29,6 +30,7 @@ export default function TabLayout() {
 }
 
 function NavBar() {
+    const navigation = useNavigation();
     const colorScheme = useColorScheme();
 
     return (
@@ -40,7 +42,7 @@ function NavBar() {
         }}>
             <Tab.Screen 
                 name='Alarms' 
-                children={() => <AlarmsScreen/>}
+                component={AlarmsScreen}
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />

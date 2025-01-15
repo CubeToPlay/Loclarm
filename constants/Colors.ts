@@ -42,6 +42,14 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    
+    calendarBackground: "#000000",
+    textSectionTitleColor: "#000000",
+    selectedDayBackgroundColor: "#000000",
+    selectedDayTextColor: "#000000",
+    todayTextColor: "#000000",
+    dayTextColor: "#000000",
+    textDisabledColor: "#000000",
   },
   dark: {
     text: '#FFFFFF',
@@ -75,5 +83,13 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+
+    calendarBackground: "#000000",
+    textSectionTitleColor: '#b6c1cd',
+    selectedDayBackgroundColor: '#00adf5',
+    selectedDayTextColor: '#ffffff',
+    todayTextColor: '#00adf5',
+    dayTextColor: '#2d4150',
+    textDisabledColor: '#dd99ee',
   },
 };

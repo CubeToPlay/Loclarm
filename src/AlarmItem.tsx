@@ -16,12 +16,14 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import Input from "./Input";
+import { MaterialTopTabNavigationProp } from "@react-navigation/material-top-tabs";
 
 export type AlarmItemProps = {
   alarm: AlarmData;
+  navigation: MaterialTopTabNavigationProp<any>;
 }
 
-export default function AlarmItem( { alarm } : AlarmItemProps ) {  
+export default function AlarmItem( { alarm, navigation} : AlarmItemProps ) {  
   const [name, setName] = useState(alarm.name);
   const [date, setDate] = useState("")
   const [enabled, setEnabled] = useState(alarm.enabled);
@@ -40,7 +42,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
     alarm.name = name;
     Alarm.updateAlarm(alarm);
     Alarm.store();
-  }, [enabled, repeat, custom, time, name])
+  }, [enabled, repeat, custom, time, name, date])
 
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
@@ -119,7 +121,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
           <EditButton 
           icon={<Ionicons name="location-outline" size={25}/>}
           text="Location"
-          onPress={() => alert("Location")}/>
+          onPress={onLocationPress}/>
           <EditButton 
           icon={<Feather name="pause" size={25}/>}
           text="Pause alarm"
@@ -215,6 +217,11 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
     Input.calendar("Pause Until", "", (updatedDate) => {
       console.log(updatedDate);
     })
+  }
+
+  function onLocationPress() {
+    console.log("Location");
+    navigation.navigate("Map");
   }
 
   function getWeeks() {

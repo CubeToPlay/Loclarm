@@ -32,11 +32,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%"
   },
-
   alarmList: {
     flex: 1,
     marginTop: "0.5%",
     width: "100%",
-    height: "100%",
   }
 })

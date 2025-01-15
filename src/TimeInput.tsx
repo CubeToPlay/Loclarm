@@ -4,8 +4,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedPressable } from "@/components/ThemedPressable";
+import { Action } from "./Input";
 
-export interface TimeInputAction {
+export interface TimeInputAction extends Action {
     active: boolean,
     time: Array<number>,
     callback: (time : Array<number>) => void

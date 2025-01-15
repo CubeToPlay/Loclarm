@@ -22,6 +22,7 @@ export type AlarmItemProps = {
 }
 
 export default function AlarmItem( { alarm } : AlarmItemProps ) {  
+  const [name, setName] = useState(alarm.name);
   const [enabled, setEnabled] = useState(alarm.enabled);
   const [repeat, setRepeat] = useState(alarm.repeat);
   const [custom, setCustom] = useState(alarm.custom);
@@ -35,9 +36,10 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
     alarm.custom = custom;
     alarm.enabled = enabled;
     alarm.repeat = repeat;
+    alarm.name = name;
     Alarm.updateAlarm(alarm);
     Alarm.store();
-  }, [enabled, repeat, custom, time])
+  }, [enabled, repeat, custom, time, name])
 
   return (
       <ThemedView style={[styles.item]} lightColor={Colors.light.alarmButtonBackground} darkColor={Colors.dark.alarmButtonBackground} >
@@ -49,7 +51,7 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
                 lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
                 darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
                 {opened ? <AntDesign name="edit" size={20}>  </AntDesign> : ""}
-                {alarm.name}
+                {name}
               </ThemedText>
             </Pressable>
             <Pressable style={styles.timePressable} onPress={onTimeEditPress}>
@@ -185,7 +187,11 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
 
   function onNameEditPress() {
     if (opened) {
-      alert("hello")
+      Input.name(name, (updatedName) => {
+        if (updatedName !== '') {
+          setName(updatedName);
+        }
+      })
     } else {
       setOpened(true);
     }
@@ -200,36 +206,11 @@ export default function AlarmItem( { alarm } : AlarmItemProps ) {
   }
 
   function onDeletePress() {
-    Alert.alert(
-      `Delete '${alarm.name}'`,
-      `Are you sure?`,
-      [
-        {
-          text: 'No',
-          style: 'cancel'
-        },
-        {
-          text: 'Yes',
-          onPress: () => {
-            Alarm.deleteAlarm(alarm);
-            Alarm.store();
-          }
-        }
-      ]
-    );
+    Input.confirmDelete(name, () => {
+      Alarm.deleteAlarm(alarm);
+      Alarm.store();
+    })
   }
-}
-
-function isEqual(a : Array<number>, b: Array<number>) : boolean {
-  if (a.length != b.length) return false;
-  
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) {
-      return false
-    }
-  }
-
-  return true;
 }
 
 const styles = StyleSheet.create({
@@ -317,6 +298,7 @@ const styles = StyleSheet.create({
   nameText: {
     flex: 1,
     fontSize: 22.5,
+    flexWrap: "nowrap",
   },
   namePressable: {
     flex: 1,

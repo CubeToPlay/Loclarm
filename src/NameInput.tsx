@@ -4,6 +4,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { StyleSheet } from "react-native"
 import { Action } from "./Input";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export interface NameInputAction extends Action {
     active: boolean,
@@ -42,7 +43,7 @@ export default function NameInput( { action, update } : { action: NameInputActio
                     onChangeText={onChangeText}
                     value={text}
                     autoFocus={true}
-                    cursorColor={"#ffffff"}
+                    cursorColor={useThemeColor({}, "text")}
                 />
             </ThemedView>
         </ThemedInput>

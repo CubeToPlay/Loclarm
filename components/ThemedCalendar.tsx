@@ -8,6 +8,7 @@ export type ThemedCalendarProps = CalendarProps & ContextProp & {
 };
 
 export function ThemedCalendar({ ...otherProps }: ThemedCalendarProps) {
+  const monthTextColor = useThemeColor({}, 'monthTextColor');
   const calendarBackground = useThemeColor({}, 'calendarBackground');
   const textSectionTitleColor = useThemeColor({}, 'textSectionTitleColor');
   const selectedDayBackgroundColor = useThemeColor({}, 'selectedDayBackgroundColor');
@@ -18,6 +19,10 @@ export function ThemedCalendar({ ...otherProps }: ThemedCalendarProps) {
 
   return <Calendar
             theme={{
+                textDayHeaderFontWeight: "700",
+                textDayFontWeight: "700",
+                textMonthFontWeight: "800",
+                monthTextColor: monthTextColor,
                 calendarBackground: calendarBackground,
                 textSectionTitleColor: textSectionTitleColor,
                 selectedDayBackgroundColor: selectedDayBackgroundColor,

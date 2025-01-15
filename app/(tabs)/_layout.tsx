@@ -18,6 +18,7 @@ import { ThemedView } from '@/components/ThemedView';
 import Alarm from '@/src/Alarm';
 import Input from '@/src/Input';
 import { useNavigation } from '@react-navigation/native';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function TabLayout() {    
     return (
@@ -36,9 +37,10 @@ function NavBar() {
     return (
         <Tab.Navigator
         screenOptions={{
-            tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-            tabBarStyle: { backgroundColor: Colors.dark.viewBackground },
-            tabBarLabelStyle: { textTransform: 'none' }
+            tabBarInactiveTintColor: useThemeColor({}, "tabIconDefault"),
+            tabBarActiveTintColor: useThemeColor({}, "tabIconSelected"),
+            tabBarStyle: [{ backgroundColor: useThemeColor({}, "viewBackground") }, styles.topTabBar],
+            tabBarIndicatorStyle: [{ backgroundColor: useThemeColor({}, "tabIconSelected") }, styles.topTabIndicator]
         }}>
             <Tab.Screen 
                 name='Alarms' 
@@ -46,7 +48,9 @@ function NavBar() {
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name={focused ? 'alarm' : 'alarm-outline'} color={color} />
-                    )
+                    ),
+                    tabBarShowLabel: false,
+                    tabBarItemStyle: styles.tabBarItem
                 }}
             />
             <Tab.Screen 
@@ -55,7 +59,9 @@ function NavBar() {
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
-                    )
+                    ),
+                    tabBarShowLabel: false,
+                    tabBarItemStyle: styles.tabBarItem
                 }}
             />
         </Tab.Navigator>
@@ -81,7 +87,7 @@ function BottomBar() {
         return (
             <View style={styles.addButton}>
                 <Pressable onPress={onNewAlarmPress}>
-                    <Ionicons name='add-circle-outline' size={50} color={Colors.dark.tabIconSelected}/>
+                    <Ionicons name='add-circle-outline' size={50} color={useThemeColor({}, "tabIconSelected")}/>
                 </Pressable>
             </View>
         )
@@ -103,5 +109,14 @@ const styles = StyleSheet.create({
     bottomTab: {
         height: 75,
         width: "100%",
+    },
+    topTabBar: {
+        height: 70
+    },
+    topTabIndicator: {
+        display: "none",
+    },
+    tabBarItem: {
+        height: 70,
     }
 })

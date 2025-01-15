@@ -1,7 +1,7 @@
 import ThemedInput from "@/components/ThemedInput";
 import { StyleSheet, View } from "react-native"
 import { Action } from "./Input";
-import { Calendar, DateData } from 'react-native-calendars';
+import { DateData } from 'react-native-calendars';
 import { useState } from "react";
 import { ThemedCalendar } from "@/components/ThemedCalendar";
 
@@ -38,7 +38,7 @@ export default function CalendarInput( { action, update } : { action: CalendarIn
             rightButtonText: "Ok",
             rightButtonCallback: onOk,
         }}
-        viewStyle={{height: "43%", top: "30%"}}
+        viewStyle={{height: "48%", top: "30%"}}
         interactStyle={{marginBottom: "-2%"}}>
             <View style={styles.inputBackground}>
                 <ThemedCalendar

@@ -3,7 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#0a7ea4';
+const tintColorLight = '#3f3f3f';
 const tintColorDark = '#fff';
 
 const alarmEnabled = '#6BAEFD';
@@ -11,12 +11,12 @@ const alarmDisabled = '#797979';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    buttonText: '#11181C',
+    text: '#3f3f3f',
+    buttonText: '#3f3f3f',
     buttonDisabledText: '#858585',
 
     background: '#fff',
-    viewBackground: '#DCEEFF',
+    viewBackground: '#C9E5FF',
 
     alarmCloseEditButtonBackground: '#CFCFCF',
     alarmButtonBackground: '#DEDEDE',
@@ -40,16 +40,17 @@ export const Colors = {
 
     tint: tintColorLight,
     icon: '#687076',
-    tabIconDefault: '#687076',
+    tabIconDefault: '#636161',
     tabIconSelected: tintColorLight,
     
-    calendarBackground: "#000000",
-    textSectionTitleColor: "#000000",
-    selectedDayBackgroundColor: "#000000",
-    selectedDayTextColor: "#000000",
-    todayTextColor: "#000000",
-    dayTextColor: "#000000",
-    textDisabledColor: "#000000",
+    monthTextColor: "#11181C",
+    calendarBackground: "#ffffff",
+    textSectionTitleColor: "#11181C",
+    selectedDayBackgroundColor: "#89BEF0",
+    selectedDayTextColor: "#11181C",
+    todayTextColor: "#00adf5",
+    dayTextColor: "#11181C",
+    textDisabledColor: "#aaaaaa",
   },
   dark: {
     text: '#FFFFFF',
@@ -84,12 +85,13 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
 
-    calendarBackground: "#000000",
+    monthTextColor: "#ffffff",
+    calendarBackground: "#394254",
     textSectionTitleColor: '#b6c1cd',
-    selectedDayBackgroundColor: '#00adf5',
+    selectedDayBackgroundColor: '#6775DB',
     selectedDayTextColor: '#ffffff',
     todayTextColor: '#00adf5',
-    dayTextColor: '#2d4150',
-    textDisabledColor: '#dd99ee',
+    dayTextColor: '#ffffff',
+    textDisabledColor: '#666666',
   },
 };

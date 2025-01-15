@@ -23,9 +23,12 @@ export type AlarmItemProps = {
   navigation: MaterialTopTabNavigationProp<any>;
 }
 
-export default function AlarmItem( { alarm, navigation} : AlarmItemProps ) {  
+export default function AlarmItem( { alarm, navigation} : AlarmItemProps ) {
+  const [, forceUpdate] = useState(0);
+  const update = () => forceUpdate(Math.random());
+
   const [name, setName] = useState(alarm.name);
-  const [date, setDate] = useState("")
+  const [date, setDate] = useState(Date.now().toString());
   const [enabled, setEnabled] = useState(alarm.enabled);
   const [repeat, setRepeat] = useState(alarm.repeat);
   const [custom, setCustom] = useState(alarm.custom);
@@ -69,7 +72,7 @@ export default function AlarmItem( { alarm, navigation} : AlarmItemProps ) {
             style={styles.datesText}
             lightColor={enabled ? Colors.light.buttonText : Colors.light.buttonDisabledText} 
             darkColor={enabled ? Colors.dark.buttonText : Colors.dark.buttonDisabledText}>
-              {getWeeks()}
+              {getWeeks() !== "" ? getWeeks() : date}
             </ThemedText>
           </ThemedView>
           <AlarmEnableButton/>
@@ -176,7 +179,7 @@ export default function AlarmItem( { alarm, navigation} : AlarmItemProps ) {
     const [active, setActive] = useState(week.current[number]);
 
     return (
-      <Pressable style={styles.weekButton} onPress={() => {setActive(!active); week.current[number] = !week.current[number]}}>
+      <Pressable style={styles.weekButton} onPress={() => {setActive(!active); week.current[number] = !week.current[number]; update();}}>
         <ThemedCircle
         style={{alignSelf: "center"}}
         size={size} 
